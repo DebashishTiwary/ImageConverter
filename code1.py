@@ -16,7 +16,7 @@ resized_img.save(output_filename, "JPEG", dpi=(200, 200), quality=100)
 # 4. If file is under 100 KB, inject metadata padding bytes to reach ~150 KB
 file_size_kb = os.path.getsize(output_filename) / 1024
 
-if file_size_kb < 100:
+if file_size_kb < 101:
     target_bytes = 150 * 1024  # Target 150 KB safely in the middle of 100-200 KB
     with open(output_filename, "rb") as f:
         data = f.read()
