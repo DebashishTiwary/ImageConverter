@@ -6,10 +6,13 @@ from pdf2docx import Converter
 import os
 import tempfile
 from docx2pdf import convert
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
 st.set_page_config(page_title="Convert your files to different extensions", layout="wide")
 st.title("File Convertor")
-
+st.write("Upload a file (pdf) and convert to docx or Vice-Versa")
 uploaded_file=st.file_uploader("Choose your file",type=["pdf","docx"])
 if uploaded_file is not None:
     if uploaded_file.name.endswith(".pdf"):
@@ -33,28 +36,35 @@ if uploaded_file is not None:
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 )
     elif uploaded_file.name.endswith(".doc") or uploaded_file.name.endswith(".docx"):
+        temp_pdf_path = "output_document.pdf"
+
         if st.button("Convert to PDF"):
-            with st.spinner("Converting using Microsoft Word..."):
+            with st.spinner("Generating PDF layout..."):
+            # Load the Word document using python-docx
+                doc = Document(uploaded_file)
             
-                with tempfile.TemporaryDirectory() as temp_dir:
-                    input_path = os.path.join(temp_dir, "input.docx")
-                    output_path = os.path.join(temp_dir, "output.pdf")
-                
-                
-                    with open(input_path, "wb") as f:
-                        f.write(uploaded_file.getbuffer())
-                
-                
-                    convert(input_path, output_path)
-                
-                
-                    with open(output_path, "rb") as f:
-                        pdf_bytes = f.read()
-                    
+            # Setup ReportLab document structure
+                pdf = SimpleDocTemplate(temp_pdf_path, pagesize=letter)
+                styles = getSampleStyleSheet()
+                story = []
+            
+            # Extract paragraphs and add them to the ReportLab story
+                for para in doc.paragraphs:
+                    if para.text.strip():
+                        p = Paragraph(para.text, styles['Normal'])
+                        story.append(p)
+                        story.append(Spacer(1, 10)) # Add spacing between paragraphs
+            
+            # Build the PDF file
+                pdf.build(story)
+                st.success("Conversion successful!")
+
+    # Display download button persistently if the PDF exists
+            if os.path.exists(temp_pdf_path):
+                with open(temp_pdf_path, "rb") as f:
                     st.download_button(
                         label="Download Converted PDF File",
-                        data=pdf_bytes,
+                        data=f,
                         file_name="converted_document.pdf",
                         mime="application/pdf"
-                )
-            st.success("Conversion successful!")
+            )
