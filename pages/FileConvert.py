@@ -5,7 +5,7 @@ from docx import Document
 from pdf2docx import Converter
 import os
 import tempfile
-from docx2pdf import convert
+# from docx2pdf import convert
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
@@ -36,35 +36,35 @@ if uploaded_file is not None:
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 )
     elif uploaded_file.name.endswith(".doc") or uploaded_file.name.endswith(".docx"):
-        temp_pdf_path = "output_document.pdf"
+    #     temp_pdf_path = "output_document.pdf"
 
-        if st.button("Convert to PDF"):
-            with st.spinner("Generating PDF layout..."):
-            # Load the Word document using python-docx
-                doc = Document(uploaded_file)
+    #     if st.button("Convert to PDF"):
+    #         with st.spinner("Generating PDF layout..."):
+    #         # Load the Word document using python-docx
+    #             doc = Document(uploaded_file)
             
-            # Setup ReportLab document structure
-                pdf = SimpleDocTemplate(temp_pdf_path, pagesize=letter)
-                styles = getSampleStyleSheet()
-                story = []
+    #         # Setup ReportLab document structure
+    #             pdf = SimpleDocTemplate(temp_pdf_path, pagesize=letter)
+    #             styles = getSampleStyleSheet()
+    #             story = []
             
-            # Extract paragraphs and add them to the ReportLab story
-                for para in doc.paragraphs:
-                    if para.text.strip():
-                        p = Paragraph(para.text, styles['Normal'])
-                        story.append(p)
-                        story.append(Spacer(1, 10)) # Add spacing between paragraphs
+    #         # Extract paragraphs and add them to the ReportLab story
+    #             for para in doc.paragraphs:
+    #                 if para.text.strip():
+    #                     p = Paragraph(para.text, styles['Normal'])
+    #                     story.append(p)
+    #                     story.append(Spacer(1, 10)) # Add spacing between paragraphs
             
-            # Build the PDF file
-                pdf.build(story)
-                st.success("Conversion successful!")
+    #         # Build the PDF file
+    #             pdf.build(story)
+                 st.success("Working with it")
 
-    # Display download button persistently if the PDF exists
-            if os.path.exists(temp_pdf_path):
-                with open(temp_pdf_path, "rb") as f:
-                    st.download_button(
-                        label="Download Converted PDF File",
-                        data=f,
-                        file_name="converted_document.pdf",
-                        mime="application/pdf"
-            )
+    # # Display download button persistently if the PDF exists
+    #         if os.path.exists(temp_pdf_path):
+    #             with open(temp_pdf_path, "rb") as f:
+    #                 st.download_button(
+    #                     label="Download Converted PDF File",
+    #                     data=f,
+    #                     file_name="converted_document.pdf",
+    #                     mime="application/pdf"
+    #         )
