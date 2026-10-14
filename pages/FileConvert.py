@@ -2,10 +2,10 @@ import cv2
 import numpy as np
 import streamlit as st
 from docx import Document
-# import pypdf
 from pdf2docx import Converter
 import os
-# from docx2pdf import 
+import tempfile
+from docx2pdf import convert
 
 st.set_page_config(page_title="Convert your files to different extensions", layout="wide")
 st.title("File Convertor")
@@ -33,4 +33,28 @@ if uploaded_file is not None:
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 )
     elif uploaded_file.name.endswith(".doc") or uploaded_file.name.endswith(".docx"):
-        
+        if st.button("Convert to PDF"):
+            with st.spinner("Converting using Microsoft Word..."):
+            
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    input_path = os.path.join(temp_dir, "input.docx")
+                    output_path = os.path.join(temp_dir, "output.pdf")
+                
+                
+                    with open(input_path, "wb") as f:
+                        f.write(uploaded_file.getbuffer())
+                
+                
+                    convert(input_path, output_path)
+                
+                
+                    with open(output_path, "rb") as f:
+                        pdf_bytes = f.read()
+                    
+                    st.download_button(
+                        label="Download Converted PDF File",
+                        data=pdf_bytes,
+                        file_name="converted_document.pdf",
+                        mime="application/pdf"
+                )
+            st.success("Conversion successful!")
