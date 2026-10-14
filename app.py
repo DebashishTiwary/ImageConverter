@@ -2,7 +2,7 @@ import streamlit as st
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Apni Dhvani - Utility Suite",
+    page_title="All in One",
     layout="wide",
     initial_sidebar_state="expanded"
 )
